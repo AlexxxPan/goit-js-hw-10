@@ -6,16 +6,15 @@ import Notiflix from 'notiflix';
 const DEBOUNCE_DELAY = 300;
 
 const refs = {
-    searchForm: document.querySelector('#search-box'),
-    countryList: document.querySelector('.country-list'),
-    countryInfo: document.querySelector('.country-info'),
-  };
-// const searchForm = document.querySelector('#search-box').placeholder =
-//   'Search by countries...';
-// const countryList = document.querySelector('.country-list');
-// const countryInfo = document.querySelector('.country-info');
+  searchForm: document.querySelector('#search-box'),
+  countryList: document.querySelector('.country-list'),
+  countryInfo: document.querySelector('.country-info'),
+};
 
-refs.searchForm.addEventListener('input', debounce(onInputChange, DEBOUNCE_DELAY));
+refs.searchForm.addEventListener(
+  'input',
+  debounce(onInputChange, DEBOUNCE_DELAY)
+);
 
 function onInputChange(e) {
   e.preventDefault();
