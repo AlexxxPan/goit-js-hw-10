@@ -13,44 +13,34 @@ const refs = {
 
 const changeBorderColor = color => (refs.searchForm.style.backgroundColor = color);
 
-refs.searchForm.addEventListener(
-  'input',
-  debounce(onInputChange, DEBOUNCE_DELAY)
-);
+refs.searchForm.addEventListener('input', debounce(onInputChange, DEBOUNCE_DELAY));
 
 function onInputChange(e) {
   e.preventDefault();
   changeBorderColor('white');
-  searchCountry = e.target.value.trim();
 
-  if (searchCountry === '') {
-    refs.countryList.innerHTML = '';
+  const countries = e.target.value.trim();
+  
+  if (countries === '') {
     refs.countryInfo.innerHTML = '';
+    refs.countryList.innerHTML = '';
     return;
   }
 
-  fetchCountries(searchCountry)
-    .then(searchCountry => {
-      if (searchCountry.length > 10) {
-        Notiflix.Notify.info(
-          '⚠️Too many matches found. Please, enter a more specific name.'
-        );
-        changeBorderColor('gainsboro');
-        return;
-      }
-      searchCountriesInfo(searchCountry);
-    })
-    .catch(_error => {
-      refs.countryList.innerHTML = '';
-      refs.countryInfo.innerHTML = '';
-      Notiflix.Notify.failure('❌Oops, there is no country with that name');
-      changeBorderColor('lightpink');
-    });
+  fetchCountries(countries)
+    .then(renderCountriesInfo)
+    .catch(_error => Notiflix.Notify.failure('❌Oops, there is no country with that name'));
+    changeBorderColor('lightpink');
 }
 
-function searchCountriesInfo(searchCountry) {
-  const markup = searchCountry
+function renderCountriesInfo(countries) {
+  if (countries.length > 10) {
+    Notiflix.Notify.info('⚠️Too many matches found. Please, enter a more specific name');
+    changeBorderColor('gainsboro');
+    refs.countryList.innerHTML = '';
+  }
 
+  const markup = countries
     .map(({ name, capital, population, flags, languages }) => {
       return `<img src="${flags.svg}" alt="${name.official}" width="30px">
           <h1 class="official-name">${name.official}</h1>
@@ -59,32 +49,29 @@ function searchCountriesInfo(searchCountry) {
           <p><b>Langueges:</b> ${Object.values(languages)}</p>`;
     })
     .join('');
-
   refs.countryInfo.innerHTML = markup;
 
-  if (searchCountry.length > 1) {
+  if (countries.length > 1) {
     refs.countryInfo.innerHTML = '';
   }
-
   changeBorderColor('aquamarine');
-
-  renderCountriesList(searchCountry);
+  renderCountriesList(countries);
 }
 
-function renderCountriesList(searchCountry) {
-  if (searchCountry.length >= 2 && searchCountry.length <= 10) {
+function renderCountriesList(countries) {
+  if (countries.length >= 2 && countries.length <= 10) {
     const markup = countries
       .map(({ name, flags }) => {
         return `<li>
-            <img src="${flags.svg}" alt="${name.official}" width="30px">
-            <p class="official-name"><b>${name.official}</b>
-          </li>`;
+        <img src="${flags.svg}" alt="${name.official}" width="30px">
+        <p class="official-name"><b>${name.official}</b>
+      </li>`;
       })
       .join('');
     refs.countryList.innerHTML = markup;
   }
 
-  if (searchCountry.length === 1) {
+  if (countries.length === 1) {
     refs.countryList.innerHTML = '';
   }
 }
