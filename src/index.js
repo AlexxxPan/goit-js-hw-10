@@ -81,4 +81,5 @@ function renderCountriesList(searchCountry) {
     refs.countryList.innerHTML = '';
   }
 }
+
 document.querySelector('#search-box').placeholder = 'Search by countries...';
