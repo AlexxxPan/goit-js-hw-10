@@ -11,6 +11,8 @@ const refs = {
   countryInfo: document.querySelector('.country-info'),
 };
 
+const changeBorderColor = color => (refs.searchForm.style.backgroundColor = color);
+
 refs.searchForm.addEventListener(
   'input',
   debounce(onInputChange, DEBOUNCE_DELAY)
@@ -18,6 +20,7 @@ refs.searchForm.addEventListener(
 
 function onInputChange(e) {
   e.preventDefault();
+  changeBorderColor('white');
   searchCountry = e.target.value.trim();
 
   if (searchCountry === '') {
@@ -32,6 +35,7 @@ function onInputChange(e) {
         Notiflix.Notify.info(
           '⚠️Too many matches found. Please, enter a more specific name.'
         );
+        changeBorderColor('gainsboro');
         return;
       }
       searchCountriesInfo(searchCountry);
@@ -40,6 +44,7 @@ function onInputChange(e) {
       refs.countryList.innerHTML = '';
       refs.countryInfo.innerHTML = '';
       Notiflix.Notify.failure('❌Oops, there is no country with that name');
+      changeBorderColor('lightpink');
     });
 }
 
@@ -60,6 +65,8 @@ function searchCountriesInfo(searchCountry) {
   if (searchCountry.length > 1) {
     refs.countryInfo.innerHTML = '';
   }
+
+  changeBorderColor('aquamarine');
 
   renderCountriesList(searchCountry);
 }
